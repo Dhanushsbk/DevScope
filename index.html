@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- SEO Tags -->
+  <title>DevScope – AI GitHub Profile Analyzer & Portfolio Reviewer</title>
+  <meta name="description" content="Analyze your GitHub profile, coding activity, and repository quality like a tech recruiter. Generate personalized career compatibility reports and roadmap paths.">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="DevScope – AI GitHub Profile Analyzer">
+  <meta property="og:description" content="Unlock details, strengths, weaknesses, and optimization suggestions for your developer portfolio.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://devscope-analyzer.github.io">
+  
+  <!-- CDNs: Remix Icons & Chart.js -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Style Sheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ==================== LOADING STATE SCREEN ==================== -->
+  <div id="loading-screen" class="loading-screen" aria-live="polite">
+    <div class="spinner"></div>
+    <div class="loading-text">DevScope AI Analysis</div>
+    <div id="loading-subtext" class="loading-subtext">Initializing portfolio scanner...</div>
+  </div>
+
+  <!-- ==================== LANDING PAGE ==================== -->
+  <main id="landing-page" class="landing-page">
+    
+    <!-- Navbar -->
+    <header class="nav-container">
+      <div class="logo">
+        <i class="ri-radar-line" aria-hidden="true" style="color: var(--accent-purple);"></i>
+        Dev<span>Scope</span>
+      </div>
+      <nav class="nav-links" aria-label="Main Navigation">
+        <a href="#testimonials" class="nav-link">Testimonials</a>
+        <a href="#landing-stats" class="nav-link">Stats</a>
+        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Theme">
+          <i class="ri-moon-line" aria-hidden="true"></i>
+        </button>
+      </nav>
+    </header>
+
+    <!-- Hero Banner -->
+    <section class="hero">
+      <div class="hero-glow"></div>
+      <h1 class="hero-title">
+        Analyze Your GitHub Profile <br><span>Like a Recruiter</span>
+      </h1>
+      <p class="hero-subtitle">
+        DevScope scans your repository codebases, language distribution, and documentation quality to highlight strengths, flag weaknesses, and recommend career pathways.
+      </p>
+
+      <!-- Search Box Area -->
+      <div class="search-wrapper">
+        <form id="search-form" class="search-container" role="search">
+          <div class="search-input-wrapper">
+            <i class="ri-github-fill" aria-hidden="true"></i>
+            <input 
+              type="text" 
+              id="username-input" 
+              class="search-input" 
+              placeholder="Enter GitHub username (e.g., octocat)..." 
+              required
+              aria-label="GitHub username search field"
+            >
+          </div>
+          <button type="submit" class="btn btn-primary" id="analyze-btn">
+            Analyze Profile <i class="ri-arrow-right-line" aria-hidden="true"></i>
+          </button>
+        </form>
+        
+        <div class="typing-container">
+          <span class="typing-label">Scans </span><span id="typewriter-text"></span><span class="cursor">|</span>
+        </div>
+        
+        <div>
+          <button type="button" class="btn btn-secondary" id="demo-btn" style="margin-top: 24px;">
+            <i class="ri-magic-line" aria-hidden="true"></i> Try Demo Profile
+          </button>
+        </div>
+
+        <div id="rate-limit-info" class="rate-limit-badge">
+          GitHub API Quota Remaining: 60/60
+        </div>
+      </div>
+    </section>
+
+    <!-- Marketing Statistics Cards -->
+    <section id="landing-stats" class="landing-stats-grid" aria-label="Platform Statistics">
+      <div class="glass-card stat-card-landing">
+        <h3><span>15k+</span></h3>
+        <p>Profiles Analyzed</p>
+      </div>
+      <div class="glass-card stat-card-landing">
+        <h3><span>94%</span></h3>
+        <p>Recruiter Match Rate</p>
+      </div>
+      <div class="glass-card stat-card-landing">
+        <h3><span>120+</span></h3>
+        <p>Countries Reached</p>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section id="testimonials" class="testimonials" aria-label="User Reviews">
+      <h2 class="section-title">What Developers Say</h2>
+      <p class="section-subtitle font-sans">Learn how engineers used DevScope to optimize their portfolios.</p>
+      
+      <div class="testimonials-grid">
+        <div class="glass-card testimonial-card">
+          <i class="ri-double-quotes-r quote" aria-hidden="true"></i>
+          <p class="testimonial-text">
+            "DevScope identified that 60% of my repositories had missing READMEs and licenses. Fixing those details helped me secure my next frontend developer interview!"
+          </p>
+          <div class="testimonial-user">
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=128&h=128&q=80" alt="Sarah Chen" class="testimonial-avatar">
+            <div>
+              <div class="testimonial-name">Sarah Chen</div>
+              <div class="testimonial-role">Frontend Engineer @ WebCore</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card testimonial-card">
+          <i class="ri-double-quotes-r quote" aria-hidden="true"></i>
+          <p class="testimonial-text">
+            "The career path suggestions matched backend and cloud roles accurately based on my Go and Shell repositories. Highly recommended!"
+          </p>
+          <div class="testimonial-user">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=128&h=128&q=80" alt="Marcus Vance" class="testimonial-avatar">
+            <div>
+              <div class="testimonial-name">Marcus Vance</div>
+              <div class="testimonial-role">DevOps Architect @ CloudPulse</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="cta-section">
+      <div class="cta-card">
+        <h2 class="cta-title">Upgrade Your GitHub Presence</h2>
+        <p class="cta-desc">Stop guessing how your profile looks to recruiters. Run a structural portfolio checklist evaluation in 10 seconds.</p>
+        <a href="#landing-page" class="btn btn-primary">Scan Your Profile Now</a>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-logo">
+        <i class="ri-radar-line" aria-hidden="true"></i> DevScope
+      </div>
+      <div>© 2026 DevScope Analyzer. Built for developers.</div>
+    </footer>
+
+  </main>
+
+  <!-- ==================== DASHBOARD LAYOUT ==================== -->
+  <div id="dashboard-layout" class="dashboard-layout" style="display: none;">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <i class="ri-radar-line" style="color: var(--accent-purple);"></i>
+          Dev<span>Scope</span>
+        </div>
+        
+        <!-- Sidebar User Summary Card -->
+        <div class="sidebar-profile">
+          <img src="" alt="User Avatar" id="sidebar-avatar" class="sidebar-avatar">
+          <div class="sidebar-profile-info">
+            <div id="sidebar-name" class="sidebar-profile-name">Dev Name</div>
+            <div id="sidebar-handle" class="sidebar-profile-handle">@devhandle</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav aria-label="Dashboard Panels">
+        <ul class="sidebar-nav">
+          <li class="sidebar-nav-item active" data-tab="overview">
+            <button><i class="ri-dashboard-line"></i> Profile Overview</button>
+          </li>
+          <li class="sidebar-nav-item" data-tab="repositories">
+            <button><i class="ri-folder-zip-line"></i> Repository Analysis</button>
+          </li>
+          <li class="sidebar-nav-item" data-tab="coding-stats">
+            <button><i class="ri-bar-chart-2-line"></i> Coding Statistics</button>
+          </li>
+          <li class="sidebar-nav-item" data-tab="strengths-weaknesses">
+            <button><i class="ri-shield-line"></i> Strengths & Weaknesses</button>
+          </li>
+          <li class="sidebar-nav-item" data-tab="portfolio-review">
+            <button><i class="ri-award-line"></i> Portfolio Review</button>
+          </li>
+          <li class="sidebar-nav-item" data-tab="career-insights">
+            <button><i class="ri-compass-3-line"></i> Career Insights</button>
+          </li>
+          <li class="sidebar-nav-item" data-tab="roadmap">
+            <button><i class="ri-road-map-line"></i> Improvement Roadmap</button>
+          </li>
+          <li class="sidebar-nav-item" data-tab="export-center">
+            <button><i class="ri-download-cloud-line"></i> Export & Share</button>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <button id="reset-btn" class="sidebar-action-btn">
+          <i class="ri-arrow-left-s-line"></i> Back to Search
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Panel -->
+    <main class="dashboard-content">
+      
+      <!-- Top Header Bar -->
+      <div class="dash-header-bar">
+        <div>
+          <h2 id="dash-section-title" class="section-title">Developer Hub</h2>
+        </div>
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <div id="dash-status-text" class="dash-user-badge">
+            <i class="ri-shield-check-line"></i> Real-time Sync
+          </div>
+          <div class="dash-user-badge">
+            <img src="" alt="User Avatar Thumbnail" id="dash-header-avatar">
+            <span id="dash-header-name">Username</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== TAB 1: Profile Overview ==================== -->
+      <section id="overview" class="dashboard-section active" aria-labelledby="overview-title">
+        <h3 id="overview-title" class="sr-only" style="display:none;">Overview</h3>
+        <div class="overview-layout">
+          
+          <!-- Sticky Left Profile Detail Card -->
+          <div class="glass-card profile-card-sticky">
+            <div class="profile-card-details">
+              <img src="" alt="Developer Profile Image" id="overview-avatar" class="profile-avatar-large">
+              <h3 id="overview-name" class="profile-name-large">Full Name</h3>
+              <div id="overview-username" class="profile-username-large">@handle</div>
+              <p id="overview-bio" class="profile-bio-large">User profile biography description content goes here.</p>
+              
+              <div id="overview-meta-list" class="profile-meta-list">
+                <!-- Injected dynamically in app.js -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Grid (Profile Score & Summary statistics) -->
+          <div class="overview-grid">
+            
+            <!-- Circular Score Display -->
+            <div class="glass-card overview-score-box">
+              <div class="circle-score-wrapper">
+                <svg class="circle-score-svg">
+                  <defs>
+                    <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="var(--accent-blue)"></stop>
+                      <stop offset="100%" stop-color="var(--accent-purple)"></stop>
+                    </linearGradient>
+                  </defs>
+                  <circle class="circle-score-bg" cx="65" cy="65" r="60"></circle>
+                  <circle id="score-circle-fill" class="circle-score-fill" cx="65" cy="65" r="60"></circle>
+                </svg>
+                <div class="score-text-inner">
+                  <span id="score-num-text" class="score-number-inner">00</span>
+                  <span class="score-label-inner">DevScore</span>
+                </div>
+              </div>
+              <div id="score-rating" class="score-badge-desc">Elite Profile</div>
+              <p class="score-subtext">Overall index score based on bio details, public repositories count, and engagement stats.</p>
+            </div>
+
+            <!-- Profile Summary Statistics -->
+            <div class="overview-main-stats">
+              <div class="glass-card metric-stat-card">
+                <div class="metric-stat-icon"><i class="ri-folder-open-line"></i></div>
+                <div class="metric-stat-info">
+                  <span id="stat-repos" class="metric-stat-num">0</span>
+                  <span class="metric-stat-label">Public Repos</span>
+                </div>
+              </div>
+              
+              <div class="glass-card metric-stat-card">
+                <div class="metric-stat-icon stars"><i class="ri-star-line"></i></div>
+                <div class="metric-stat-info">
+                  <span id="stat-stars" class="metric-stat-num">0</span>
+                  <span class="metric-stat-label">Total Stars</span>
+                </div>
+              </div>
+
+              <div class="glass-card metric-stat-card">
+                <div class="metric-stat-icon forks"><i class="ri-git-branch-line"></i></div>
+                <div class="metric-stat-info">
+                  <span id="stat-forks" class="metric-stat-num">0</span>
+                  <span class="metric-stat-label">Total Forks</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== TAB 2: Repository Analysis ==================== -->
+      <section id="repositories" class="dashboard-section" aria-labelledby="repositories-title">
+        <h3 id="repositories-title" class="sr-only" style="display:none;">Repositories</h3>
+        
+        <!-- Top Stats Bar -->
+        <div class="repo-highlights-grid">
+          <div class="glass-card highlight-card">
+            <span class="highlight-label">Most Starred Project</span>
+            <span id="hl-starred-name" class="highlight-name">Repository Name</span>
+            <span id="hl-starred-val" class="highlight-val"><i class="ri-star-fill"></i> 0</span>
+          </div>
+          <div class="glass-card highlight-card">
+            <span class="highlight-label">Most Forked Project</span>
+            <span id="hl-forked-name" class="highlight-name">Repository Name</span>
+            <span id="hl-forked-val" class="highlight-val"><i class="ri-git-branch-fill"></i> 0</span>
+          </div>
+          <div class="glass-card highlight-card">
+            <span class="highlight-label">Recent Updates</span>
+            <span id="hl-updated-name" class="highlight-name">Repository Name</span>
+            <span id="hl-updated-val" class="highlight-val"><i class="ri-time-line"></i> N/A</span>
+          </div>
+          <div class="glass-card highlight-card">
+            <span class="highlight-label">Largest Repository</span>
+            <span id="hl-size-name" class="highlight-name">Repository Name</span>
+            <span id="hl-size-val" class="highlight-val"><i class="ri-hard-drive-line"></i> 0 MB</span>
+          </div>
+          <div class="glass-card highlight-card" style="border-color: var(--border-focus);">
+            <span class="highlight-label">Repo Health Score</span>
+            <span id="repo-health-score" class="highlight-name" style="color: var(--accent-emerald);">85%</span>
+            <span class="highlight-val">Average metadata coverage</span>
+          </div>
+        </div>
+
+        <!-- Interactive Search Filters -->
+        <div class="repo-controls">
+          <div class="repo-search-wrapper">
+            <i class="ri-search-line"></i>
+            <input type="text" id="repo-search" class="repo-search-input" placeholder="Search repository name or description...">
+          </div>
+          
+          <select id="repo-filter-lang" class="repo-select-filter" aria-label="Filter repositories by code language">
+            <option value="all">All Languages</option>
+          </select>
+          
+          <select id="repo-sort" class="repo-select-filter" aria-label="Sort repositories by criteria">
+            <option value="updated">Recently Updated</option>
+            <option value="stars">Most Stars</option>
+            <option value="forks">Most Forks</option>
+            <option value="size">Largest Size</option>
+            <option value="health">Highest Health Score</option>
+          </select>
+        </div>
+
+        <!-- Dynamic Repository Cards Container -->
+        <div id="repo-cards-container" class="repo-cards-grid">
+          <!-- Injected dynamically in app.js -->
+        </div>
+      </section>
+
+      <!-- ==================== TAB 3: Coding Statistics ==================== -->
+      <section id="coding-stats" class="dashboard-section" aria-labelledby="coding-stats-title">
+        <h3 id="coding-stats-title" class="sr-only" style="display:none;">Coding Stats</h3>
+        
+        <div class="charts-grid">
+          
+          <!-- Language Distribution Pie/Doughnut Chart -->
+          <div class="glass-card chart-card">
+            <div class="chart-card-title"><i class="ri-pie-chart-line"></i> Language Distribution</div>
+            <div class="chart-canvas-container">
+              <canvas id="chart-lang"></canvas>
+            </div>
+          </div>
+          
+          <!-- Repository Growth Chart -->
+          <div class="glass-card chart-card">
+            <div class="chart-card-title"><i class="ri-line-chart-line"></i> Repository Growth Timeline</div>
+            <div class="chart-canvas-container">
+              <canvas id="chart-growth"></canvas>
+            </div>
+          </div>
+
+          <!-- Stars Chart -->
+          <div class="glass-card chart-card">
+            <div class="chart-card-title"><i class="ri-star-line"></i> Top Projects Stars Comparison</div>
+            <div class="chart-canvas-container">
+              <canvas id="chart-stars"></canvas>
+            </div>
+          </div>
+
+          <!-- Forks Chart -->
+          <div class="glass-card chart-card">
+            <div class="chart-card-title"><i class="ri-git-branch-line"></i> Top Projects Forks Comparison</div>
+            <div class="chart-canvas-container">
+              <canvas id="chart-forks"></canvas>
+            </div>
+          </div>
+
+          <!-- Commit Activity Grid Visualization -->
+          <div class="glass-card chart-card commit-calendar-card">
+            <div class="chart-card-title"><i class="ri-calendar-todo-line"></i> Commit Activity & Coding Rhythm</div>
+            <div class="contrib-calendar-container">
+              <div id="commit-calendar-box"></div>
+              <div class="contrib-legend">
+                <span>Less</span>
+                <div class="contrib-legend-box" style="background-color: var(--border-color)"></div>
+                <div class="contrib-legend-box" style="background-color: #0e4429"></div>
+                <div class="contrib-legend-box" style="background-color: #006d32"></div>
+                <div class="contrib-legend-box" style="background-color: #26a641"></div>
+                <div class="contrib-legend-box" style="background-color: #39d353"></div>
+                <span>More</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==================== TAB 4: Strengths & Weaknesses ==================== -->
+      <section id="strengths-weaknesses" class="dashboard-section" aria-labelledby="insights-title">
+        <h3 id="insights-title" class="sr-only" style="display:none;">Strengths & Weaknesses</h3>
+        <div class="insights-layout">
+          
+          <!-- Strengths (Green Columns) -->
+          <div>
+            <div class="insights-column-title strengths"><i class="ri-checkbox-circle-line"></i> Profile Strengths</div>
+            <div id="strengths-list" class="strengths-container">
+              <!-- Injected dynamically in app.js -->
+            </div>
+          </div>
+
+          <!-- Weaknesses (Amber/Red Warnings) -->
+          <div>
+            <div class="insights-column-title weaknesses"><i class="ri-error-warning-line"></i> Improvement Warnings</div>
+            <div id="weaknesses-list" class="weaknesses-container">
+              <!-- Injected dynamically in app.js -->
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==================== TAB 5: Portfolio Review ==================== -->
+      <section id="portfolio-review" class="dashboard-section" aria-labelledby="portfolio-title">
+        <h3 id="portfolio-title" class="sr-only" style="display:none;">Portfolio Review</h3>
+        <div class="portfolio-review-layout">
+          
+          <!-- Radar Chart Card -->
+          <div class="glass-card portfolio-chart-card">
+            <div class="chart-card-title"><i class="ri-radar-line"></i> Portfolio Completeness Evaluation</div>
+            <div class="chart-canvas-container">
+              <canvas id="chart-portfolio-radar"></canvas>
+            </div>
+          </div>
+
+          <!-- Dimensional Scores bar list -->
+          <div class="glass-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <h4 class="chart-card-title" style="margin-bottom: 10px;"><i class="ri-calculator-line"></i> Performance Dimensions</h4>
+              <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 24px;">Individual rating benchmarks derived from repository files, descriptions, and user profile details.</p>
+            </div>
+            
+            <div class="portfolio-metrics-list">
+              <!-- Completeness -->
+              <div class="portfolio-metric-bar-wrapper">
+                <div class="portfolio-metric-bar-label">
+                  <span>Portfolio Completeness</span>
+                  <span class="portfolio-metric-val">0%</span>
+                </div>
+                <div class="portfolio-bar-outer">
+                  <div id="p-bar-completeness" class="portfolio-bar-inner"></div>
+                </div>
+              </div>
+
+              <!-- Professionalism -->
+              <div class="portfolio-metric-bar-wrapper">
+                <div class="portfolio-metric-bar-label">
+                  <span>GitHub Professionalism</span>
+                  <span class="portfolio-metric-val">0%</span>
+                </div>
+                <div class="portfolio-bar-outer">
+                  <div id="p-bar-professionalism" class="portfolio-bar-inner"></div>
+                </div>
+              </div>
+
+              <!-- Documentation Quality -->
+              <div class="portfolio-metric-bar-wrapper">
+                <div class="portfolio-metric-bar-label">
+                  <span>Documentation Quality</span>
+                  <span class="portfolio-metric-val">0%</span>
+                </div>
+                <div class="portfolio-bar-outer">
+                  <div id="p-bar-documentation" class="portfolio-bar-inner"></div>
+                </div>
+              </div>
+
+              <!-- Project Uniqueness -->
+              <div class="portfolio-metric-bar-wrapper">
+                <div class="portfolio-metric-bar-label">
+                  <span>Project Uniqueness</span>
+                  <span class="portfolio-metric-val">0%</span>
+                </div>
+                <div class="portfolio-bar-outer">
+                  <div id="p-bar-uniqueness" class="portfolio-bar-inner"></div>
+                </div>
+              </div>
+
+              <!-- Technical Depth -->
+              <div class="portfolio-metric-bar-wrapper">
+                <div class="portfolio-metric-bar-label">
+                  <span>Technical Depth</span>
+                  <span class="portfolio-metric-val">0%</span>
+                </div>
+                <div class="portfolio-bar-outer">
+                  <div id="p-bar-depth" class="portfolio-bar-inner"></div>
+                </div>
+              </div>
+
+              <!-- Recruiter Attractiveness -->
+              <div class="portfolio-metric-bar-wrapper">
+                <div class="portfolio-metric-bar-label">
+                  <span>Recruiter Attractiveness</span>
+                  <span class="portfolio-metric-val">0%</span>
+                </div>
+                <div class="portfolio-bar-outer">
+                  <div id="p-bar-recruiter" class="portfolio-bar-inner"></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="border-top: 1px solid var(--border-color); padding-top: 20px; margin-top: 24px; text-align: center;">
+              <span style="font-size: 0.85rem; color: var(--text-muted);">Cumulative Index Rating: </span>
+              <strong id="radar-score-total" style="font-size: 1.1rem; color: var(--accent-purple);">0/100</strong>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==================== TAB 6: Career Insights Dashboard ==================== -->
+      <section id="career-insights" class="dashboard-section" aria-labelledby="career-title">
+        <h3 id="career-title" class="sr-only" style="display:none;">Career Insights</h3>
+        
+        <!-- Compatibility Hero Header -->
+        <div class="career-hero-box">
+          <i class="ri-compass-3-line" style="font-size: 2.2rem; color: var(--accent-purple); margin-bottom: 12px;"></i>
+          <span class="career-hero-title">Best Fit Alignment</span>
+          <h4 id="career-best-role" style="font-size: 1.8rem; font-family: var(--font-display); font-weight: 800; background: var(--gradient-hero); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px;">Software Engineer</h4>
+          <p id="career-best-pct" style="font-weight: 600; font-size: 1rem; color: var(--accent-cyan);">95% Compatibility Match</p>
+          <p class="career-hero-subtitle" style="margin-top: 10px; max-width: 600px;">Based on primary repository coding distributions, system descriptions, and technical attributes.</p>
+        </div>
+
+        <!-- Career cards grid list -->
+        <div id="career-cards-list" class="career-cards-grid">
+          <!-- Injected dynamically in app.js -->
+        </div>
+      </section>
+
+      <!-- ==================== TAB 7: Roadmap Timeline ==================== -->
+      <section id="roadmap" class="dashboard-section" aria-labelledby="roadmap-title">
+        <h3 id="roadmap-title" class="sr-only" style="display:none;">Roadmap</h3>
+        
+        <div class="roadmap-timeline-container">
+          
+          <!-- Milestone 1: Immediate Improvements -->
+          <div class="roadmap-milestone immediate">
+            <div class="roadmap-milestone-marker"></div>
+            <div class="roadmap-milestone-title-box">
+              <span class="roadmap-milestone-title">Immediate Phase</span>
+              <span class="roadmap-milestone-badge">0 - 30 Days</span>
+            </div>
+            <div id="roadmap-immediate-stack" class="roadmap-cards-stack">
+              <!-- Injected dynamically in app.js -->
+            </div>
+          </div>
+
+          <!-- Milestone 2: Short-term Improvements -->
+          <div class="roadmap-milestone short">
+            <div class="roadmap-milestone-marker"></div>
+            <div class="roadmap-milestone-title-box">
+              <span class="roadmap-milestone-title">Short-Term Phase</span>
+              <span class="roadmap-milestone-badge">1 - 3 Months</span>
+            </div>
+            <div id="roadmap-short-stack" class="roadmap-cards-stack">
+              <!-- Injected dynamically in app.js -->
+            </div>
+          </div>
+
+          <!-- Milestone 3: Long-term Improvements -->
+          <div class="roadmap-milestone long">
+            <div class="roadmap-milestone-marker"></div>
+            <div class="roadmap-milestone-title-box">
+              <span class="roadmap-milestone-title">Long-Term Phase</span>
+              <span class="roadmap-milestone-badge">3 - 6 Months</span>
+            </div>
+            <div id="roadmap-long-stack" class="roadmap-cards-stack">
+              <!-- Injected dynamically in app.js -->
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==================== TAB 8: Export & Share Center ==================== -->
+      <section id="export-center" class="dashboard-section" aria-labelledby="export-title">
+        <h3 id="export-title" class="sr-only" style="display:none;">Export Center</h3>
+        
+        <div class="glass-card export-hero">
+          <i class="ri-download-cloud-2-line"></i>
+          <h3>Generate Professional Summaries</h3>
+          <p>Export your comprehensive profile statistics, insights, and roadmaps to share with tech recruiters or team leads.</p>
+          
+          <div class="export-options-grid">
+            <button id="export-pdf-btn" class="glass-card export-option-card">
+              <i class="ri-file-pdf-line"></i>
+              <h4>Export PDF Report</h4>
+              <p>Generates a formatted, high-contrast printable document layout suitable for resume links.</p>
+            </button>
+
+            <button id="download-json-btn" class="glass-card export-option-card">
+              <i class="ri-database-line"></i>
+              <h4>Download JSON Metrics</h4>
+              <p>Downloads a full structured JSON package containing all calculated heuristics and values.</p>
+            </button>
+
+            <button id="share-btn" class="glass-card export-option-card" style="grid-column: span 2;">
+              <i class="ri-share-line"></i>
+              <h4>Share Profile Review</h4>
+              <p>Copies a styled markdown summary text block to your clipboard to paste directly on platforms.</p>
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ==================== PRINT REPORT HIDDEN OVERLAY CONTAINER ==================== -->
+  <div id="print-report-container">
+    <div class="print-page-break">
+      <div class="print-header">
+        <div>
+          <div class="print-title">DevScope Portfolio Review Report</div>
+          <div class="print-subtitle">Automated structural profile analysis report</div>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-weight: 700; font-size: 16px;">DevScope Index</div>
+          <div id="print-score" style="font-size: 24px; font-weight: 800; color: #6366f1;">00/100</div>
+        </div>
+      </div>
+
+      <div class="print-profile-grid">
+        <img src="" alt="Profile Image" id="print-avatar" class="print-avatar">
+        <div>
+          <h2 id="print-name" style="font-size: 22px; font-weight: 700; margin-bottom: 4px;">Developer Name</h2>
+          <div id="print-handle" style="font-family: monospace; font-size: 14px; color: #0284c7; margin-bottom: 10px;">@devhandle</div>
+          <p id="print-bio" style="font-size: 13px; line-height: 1.5; color: #334155;">User biography text outline.</p>
+        </div>
+      </div>
+
+      <div class="print-meta-grid">
+        <div class="print-card">
+          <div style="font-size: 11px; color: #64748b; text-transform: uppercase;">Company</div>
+          <div id="print-company" style="font-weight: 600; font-size: 13px;">N/A</div>
+        </div>
+        <div class="print-card">
+          <div style="font-size: 11px; color: #64748b; text-transform: uppercase;">Location</div>
+          <div id="print-location" style="font-weight: 600; font-size: 13px;">N/A</div>
+        </div>
+        <div class="print-card">
+          <div style="font-size: 11px; color: #64748b; text-transform: uppercase;">Website</div>
+          <div id="print-blog" style="font-weight: 600; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">N/A</div>
+        </div>
+        <div class="print-card">
+          <div style="font-size: 11px; color: #64748b; text-transform: uppercase;">GitHub Joined</div>
+          <div id="print-joined" style="font-weight: 600; font-size: 13px;">N/A</div>
+        </div>
+        <div class="print-card">
+          <div style="font-size: 11px; color: #64748b; text-transform: uppercase;">Repositories</div>
+          <div id="print-repos-count" style="font-weight: 600; font-size: 13px;">0</div>
+        </div>
+        <div class="print-card">
+          <div style="font-size: 11px; color: #64748b; text-transform: uppercase;">Stars Received</div>
+          <div id="print-stars-count" style="font-weight: 600; font-size: 13px;">0</div>
+        </div>
+      </div>
+
+      <div class="print-section">
+        <div class="print-section-title">Analysis Benchmarks</div>
+        <div class="print-card-grid">
+          <div class="print-card">
+            <div style="font-size: 11px; color: #64748b; text-transform: uppercase;">Repository Quality Score</div>
+            <div id="print-health" style="font-size: 20px; font-weight: 700; color: #10b981;">0%</div>
+            <p style="font-size: 11px; color: #475569; margin-top: 4px;">Evaluates presence of project summaries, licensing, and installation README guides.</p>
+          </div>
+          <div class="print-card">
+            <div style="font-size: 11px; color: #64748b; text-transform: uppercase;">Primary Track Suggestion</div>
+            <div style="font-size: 16px; font-weight: 700; color: #a855f7; margin-top: 4px;">Technical Developer</div>
+            <p style="font-size: 11px; color: #475569; margin-top: 4px;">Derived from dominant programming language weights.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="print-section">
+        <div class="print-section-title">Key Profile Strengths</div>
+        <ul id="print-strengths-list" class="print-bullet-list">
+          <!-- Injected dynamically -->
+        </ul>
+      </div>
+    </div>
+
+    <div>
+      <div class="print-section">
+        <div class="print-section-title">Improvement Warnings</div>
+        <ul id="print-weaknesses-list" class="print-bullet-list">
+          <!-- Injected dynamically -->
+        </ul>
+      </div>
+
+      <div class="print-section">
+        <div class="print-section-title">Suggested Career Alignments</div>
+        <ul id="print-careers-list" class="print-bullet-list">
+          <!-- Injected dynamically -->
+        </ul>
+      </div>
+
+      <div class="print-section">
+        <div class="print-section-title">Actionable Portfolio Optimizations</div>
+        <ul id="print-roadmap-list" class="print-bullet-list">
+          <!-- Injected dynamically -->
+        </ul>
+      </div>
+
+      <div style="margin-top: 50px; font-size: 11px; text-align: center; color: #94a3b8; border-top: 1px solid #cbd5e1; padding-top: 10px;">
+        Generated using DevScope GitHub Analyzer. To audit your profile, visit devscope-analyzer.github.io
+      </div>
+    </div>
+  </div>
+
+  <!-- Modules Scripts -->
+  <script src="js/mockData.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/analyzer.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

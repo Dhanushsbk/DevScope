@@ -1,0 +1,10 @@
+node_modules/
+.DS_Store
+*.log
+.system_generated/
+.gemini/
+brain/
+knowledge/
+walkthrough.md
+task.md
+implementation_plan.md

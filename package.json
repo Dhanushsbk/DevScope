@@ -1,0 +1,19 @@
+{
+  "name": "devscope",
+  "version": "1.0.0",
+  "description": "AI-inspired GitHub Profile Analyzer & Portfolio Reviewer",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx -y http-server . -p 3000"
+  },
+  "keywords": [
+    "github",
+    "analyzer",
+    "portfolio",
+    "developer",
+    "metrics",
+    "chartjs"
+  ],
+  "author": "DevScope Team",
+  "license": "MIT"
+}
