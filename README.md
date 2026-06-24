@@ -79,3 +79,7 @@ Since DevScope has no backend database, you can deploy it directly onto GitHub P
 3. Navigate to **Settings** > **Pages** inside your GitHub repository settings.
 4. Under **Build and deployment**, select **Deploy from a branch** and set the source branch to `main` (or `master`) and directory to `/ (root)`.
 5. Click **Save**. Your site will be live at `https://<your-username>.github.io/<repo-name>/` in a few minutes!
+
+
+
+GitHub Pages rebuild test
