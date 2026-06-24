@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // Re-render charts if data is loaded to apply correct text/grid colors
     if (currentAnalysisData) {
-      renderDashboardCharts(currentAnalysisData.data, currentTheme === "dark");
+      renderDashboardCharts(currentAnalysisData.raw, currentTheme === "dark");
     }
   });
 
@@ -556,7 +556,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // 1. Search Query
     const search = repoSearchInput.value.toLowerCase().trim();
     if (search) {
-      list = list.filter(r => r.name.toLowerCase().includes(search) || r.description.toLowerCase().includes(search));
+      list = list.filter(r => (r.name || "").toLowerCase().includes(search) || (r.description || "").toLowerCase().includes(search));
     }
     
     // 2. Language Filter
@@ -641,38 +641,55 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Export to PDF (triggers standard print styling)
   exportPdfBtn.addEventListener("click", () => {
-    if (!currentAnalysisData) return;
+    if (!currentAnalysisData) {
+      alert("Please search or load a profile before exporting.");
+      return;
+    }
+    console.log("Triggering PDF print report...");
     window.print();
   });
 
   // Download raw analysis metrics as a JSON file
   downloadJsonBtn.addEventListener("click", () => {
-    if (!currentAnalysisData) return;
+    if (!currentAnalysisData) {
+      alert("Please search or load a profile before downloading reports.");
+      return;
+    }
     
-    const analysisPayload = {
-      meta: {
-        tool: "DevScope GitHub Portfolio Reviewer",
-        version: "1.0.0",
-        timestamp: new Date().toISOString()
-      },
-      analysis: currentAnalysisData.analysis,
-      rawProfile: currentAnalysisData.raw.profile
-    };
-    
-    const blob = new Blob([JSON.stringify(analysisPayload, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `devscope-report-${currentAnalysisData.raw.profile.login}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    console.log("Compiling JSON metrics download...");
+    try {
+      const analysisPayload = {
+        meta: {
+          tool: "DevScope GitHub Portfolio Reviewer",
+          version: "1.0.0",
+          timestamp: new Date().toISOString()
+        },
+        analysis: currentAnalysisData.analysis,
+        rawProfile: currentAnalysisData.raw.profile
+      };
+      
+      const blob = new Blob([JSON.stringify(analysisPayload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `devscope-report-${currentAnalysisData.raw.profile.login}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      console.log("JSON metrics download triggered successfully.");
+    } catch (err) {
+      console.error("JSON download failed:", err);
+      alert("Failed to download analysis data. Error: " + err.message);
+    }
   });
 
   // Share review details (copies snippet to clipboard)
   shareBtn.addEventListener("click", () => {
-    if (!currentAnalysisData) return;
+    if (!currentAnalysisData) {
+      alert("Please search or load a profile before sharing.");
+      return;
+    }
     
     const profile = currentAnalysisData.raw.profile;
     const score = currentAnalysisData.analysis.profileScore;
@@ -683,14 +700,42 @@ document.addEventListener("DOMContentLoaded", () => {
 💼 Primary Career Track: ${topRoleCheck(score, topCareer)}
 🚀 Ready to evaluate your developer profile? Try DevScope!`;
     
-    navigator.clipboard.writeText(shareText)
-      .then(() => {
-        alert("Portfolio Analysis Summary copied to clipboard! Share it with recruiters or teams.");
-      })
-      .catch(err => {
-        console.error("Clipboard copy failed: ", err);
-      });
+    console.log("Triggering clipboard copy...");
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(shareText)
+        .then(() => {
+          alert("Portfolio Analysis Summary copied to clipboard! Share it with recruiters or teams.");
+        })
+        .catch(err => {
+          console.error("Clipboard API copy failed, trying fallback:", err);
+          fallbackCopyText(shareText);
+        });
+    } else {
+      console.log("Clipboard API unavailable, trying fallback copy...");
+      fallbackCopyText(shareText);
+    }
   });
+
+  function fallbackCopyText(text) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed"; // Avoid scrolling to bottom
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+      const successful = document.execCommand('copy');
+      if (successful) {
+        alert("Portfolio Analysis Summary copied to clipboard! Share it with recruiters or teams.");
+      } else {
+        throw new Error("execCommand copy returned false");
+      }
+    } catch (err) {
+      console.error("Fallback copy failed: ", err);
+      alert("Failed to copy. Please manually copy the summary. Details:\n\n" + text);
+    }
+    document.body.removeChild(textArea);
+  }
 
   function topRoleCheck(score, role) {
     if (score > 80) return `${role} (Elite Tier)`;
