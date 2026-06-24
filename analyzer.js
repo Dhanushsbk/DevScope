@@ -368,8 +368,8 @@ window.DevScopeAnalyzer = {
 
     // 2. Search descriptions for keyword signals
     repos.forEach(repo => {
-      const desc = repo.description.toLowerCase();
-      const name = repo.name.toLowerCase();
+      const desc = (repo.description || "").toLowerCase();
+      const name = (repo.name || "").toLowerCase();
 
       // DevOps keywords
       if (desc.includes("docker") || desc.includes("cicd") || desc.includes("k8s") || desc.includes("kubernetes") || desc.includes("workflow") || desc.includes("aws") || desc.includes("deploy") || desc.includes("sync")) {
